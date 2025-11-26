@@ -9,6 +9,18 @@ conda create --name java python=3.14
 conda activate java
 ```
 
+## Build (wheel)
+
+## Install
+
+## Run (sandbox)
+
+## Build (image)
+
+## Run (compose)
+
+## Run (kind)
+
 ## Todo list
 
 - initial setup of the app; run using internal debug server using a venv (conda)
