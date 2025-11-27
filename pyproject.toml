@@ -1,6 +1,6 @@
 [project]
 name = "jaga"
-version = "0.0.0"
+version = "0.1.0"
 description = "A Flask application to retrieve and manage tasks"
 dependencies = [
     "flask==3.1.2",
