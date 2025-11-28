@@ -6,6 +6,7 @@ def test_tasks_get_empty(client):
     assert isinstance(data, list)
     assert len(data) == 0
 
+
 def test_tasks_get_3_items(client):
     response = client.get("/tasks/")
     assert response.status_code == 200
@@ -13,9 +14,9 @@ def test_tasks_get_3_items(client):
     assert isinstance(data, list)
     assert len(data) == 3
 
+
 # create
 
 # update
 
 # delete
-

@@ -9,12 +9,8 @@ from jaga.schemas.task import TaskSchema
 REST view using flask_smorest / flask-rest-api (for clean views including validation) and marshmallow (for serialization)
 """
 
-bp = Blueprint(
-    "tasks", 
-    "tasks", 
-    url_prefix="/tasks", 
-    description="Task operations"
-)
+bp = Blueprint("tasks", "tasks", url_prefix="/tasks", description="Task operations")
+
 
 @bp.route("/")
 class TaskList(MethodView):
@@ -30,6 +26,7 @@ class TaskList(MethodView):
         db.session.add(item)
         db.session.commit()
         return item
+
 
 @bp.route("/<int:task_id>")
 class TaskDetail(MethodView):
@@ -53,6 +50,7 @@ class TaskDetail(MethodView):
         db.session.delete(item)
         db.session.commit()
         return {"message": f"item {task_id} deleted"}, 204
+
 
 def register_views(api):
     api.register_blueprint(bp)

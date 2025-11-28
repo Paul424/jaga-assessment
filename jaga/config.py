@@ -3,7 +3,7 @@ import os
 SECRET_KEY = "!secret123"
 
 # Database
-SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', "sqlite:///jaga.db")
+SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///jaga.db")
 
 # Api
 API_TITLE = "Jaga API"
