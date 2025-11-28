@@ -27,7 +27,8 @@ class TaskList(MethodView):
         elif args.get("op") == OperatorEnum.asc:
             q = q.order_by(asc(self._order_by_to_task_column(args.get("order_by"))))
         else:
-            raise DataError(f"Unexpected operator {args.get("op")} found")
+            op = args.get("op")
+            raise DataError(f"Unexpected operator {op} found")
         return db.paginate(q, page=args.get("page"), per_page=args.get("per_page"), max_per_page=10, error_out=False)
 
     @bp.arguments(TaskSchema)
