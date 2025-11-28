@@ -5,8 +5,8 @@ A small / simple Flask application to retrieve and manage tasks
 ## Setup
 
 ```
-conda create --name java python=3.14
-conda activate java
+conda create --name jaga python=3.14
+conda activate jaga
 ```
 
 ## Install
@@ -14,6 +14,16 @@ conda activate java
 ```
 # Install the project in the active venv (in development mode)
 pip install -e .
+
+# Additional test dependencies are included using:
+pip install -e '.[develop]'
+```
+
+## Test
+
+The app is bundled with unittests, run as follows using pytest:
+```
+pytest -v
 ```
 
 ## Run (sandbox)
@@ -22,6 +32,15 @@ pip install -e .
 # Using internal debug server
 cd jaga
 flask --app app run --debug
+
+# On another shell
+curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"fred", "email":"fred.flintstone@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"barney", "email":"barney.rubble@gmail.com"}'
+curl -XGET http://localhost:5000/tasks/
+curl -XGET http://localhost:5000/tasks/1
+curl -XPUT http://localhost:5000/tasks/2 -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
+curl -XGET http://localhost:5000/tasks/2
+curl -XDELETE http://localhost:5000/tasks/2
 ```
 
 ## Build (image)
@@ -32,10 +51,6 @@ flask --app app run --debug
 
 ## Todo list
 
-- initial setup of the app; run using internal debug server using a venv (conda)
-- add db (sqlite for first tests)
-- add crud+l views
-- add first unittests
 - paging
 - filtering
 - sorting
@@ -43,6 +58,7 @@ flask --app app run --debug
 - add auth (start /w internal user model + fixture?)
 - add docker file (needs uwsgi setup; gunicorn known...)
 - github actions for build (multi stage to include test)
+- replace sqlite with postgres (or behind an abstraction)
 - docker-compose /w postgresql
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
