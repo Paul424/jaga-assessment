@@ -51,6 +51,7 @@ def test_tasks_get_2_items(client, task_factory):
     assert isinstance(data, list)
     assert len(data) == 2
 
+
 @pytest.mark.parametrize(
     "page, per_page, expected",
     [
@@ -67,9 +68,7 @@ def test_tasks_get_2_items(client, task_factory):
 def test_tasks_get_paginate(client, task_factory, page, per_page, expected):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     task2 = task_factory(username="wilma", email="wilma.flintstone@gmail.com")
-    task3 = task_factory(
-        username="barney", email="barney.rubble@gmail.com"
-    )
+    task3 = task_factory(username="barney", email="barney.rubble@gmail.com")
     task4 = task_factory(username="betty", email="betty.rubble@gmail.com")
     task5 = task_factory(username="bammbamm", email="bamm.bamm.rubble@gmail.com")
     query_params = []
@@ -77,10 +76,11 @@ def test_tasks_get_paginate(client, task_factory, page, per_page, expected):
         query_params.append(f"page={page}")
     if per_page is not None:
         query_params.append(f"per_page={per_page}")
-    response = client.get(f"/tasks/?{"&".join(query_params)}")
+    response = client.get(f"/tasks/?{" & ".join(query_params)}")
     assert response.status_code == 200
     data = response.get_json()
     assert [x["username"] for x in data] == expected
+
 
 @pytest.mark.parametrize(
     "order_by, op, expected",
@@ -97,9 +97,7 @@ def test_tasks_get_paginate(client, task_factory, page, per_page, expected):
 def test_tasks_get_order_by(client, task_factory, order_by, op, expected):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     task2 = task_factory(username="wilma", email="wilma.flintstone@gmail.com")
-    task3 = task_factory(
-        username="barney", email="barney.rubble@gmail.com"
-    )
+    task3 = task_factory(username="barney", email="barney.rubble@gmail.com")
     task4 = task_factory(username="betty", email="betty.rubble@gmail.com")
     task5 = task_factory(username="bammbamm", email="bamm.bamm.rubble@gmail.com")
     query_params = []
@@ -107,10 +105,11 @@ def test_tasks_get_order_by(client, task_factory, order_by, op, expected):
         query_params.append(f"order_by={order_by}")
     if op is not None:
         query_params.append(f"op={op}")
-    response = client.get(f"/tasks/?{"&".join(query_params)}")
+    response = client.get(f"/tasks/?{" & ".join(query_params)}")
     assert response.status_code == 200
     data = response.get_json()
     assert [x["username"] for x in data] == expected
+
 
 # create
 
