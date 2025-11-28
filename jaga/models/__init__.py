@@ -1,5 +1,6 @@
 from .task import *
 
+
 def create_models(app, db):
     app.logger.debug(f"Create models")
 

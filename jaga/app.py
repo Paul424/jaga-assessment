@@ -7,6 +7,7 @@ from .views import register_views
 from .db import register_db
 from .models import create_models
 
+
 def create_app(config_override=None):
     # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)

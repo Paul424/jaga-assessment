@@ -1,5 +1,6 @@
 import yaml
 
+
 def test_openapi_get(client):
     response = client.get("/openapi.yaml")
     assert response.status_code == 200
