@@ -35,7 +35,9 @@ flask --app app run --debug
 
 # On another shell
 curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"fred", "email":"fred.flintstone@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
 curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"barney", "email":"barney.rubble@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"betty", "email":"betty.rubble@gmail.com"}'
 curl -XGET http://localhost:5000/tasks/
 curl -XGET http://localhost:5000/tasks/1
 curl -XPUT http://localhost:5000/tasks/2 -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
@@ -51,9 +53,6 @@ curl -XDELETE http://localhost:5000/tasks/2
 
 ## Todo list
 
-- paging
-- filtering
-- sorting
 - type annotations and linting
 - add auth (start /w internal user model + fixture?)
 - add docker file (needs uwsgi setup; gunicorn known...)
