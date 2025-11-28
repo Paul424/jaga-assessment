@@ -5,13 +5,19 @@ from sqlalchemy import desc, asc
 from jaga.error import DataError
 from jaga.db import db
 from jaga.models.task import Task
-from jaga.schemas.task import TaskSchema, PaginationQueryArgsSchema, OrderByFieldEnum, OperatorEnum
+from jaga.schemas.task import (
+    TaskSchema,
+    PaginationQueryArgsSchema,
+    OrderByFieldEnum,
+    OperatorEnum,
+)
 
 """
 REST view using flask_smorest / flask-rest-api (for clean views including validation) and marshmallow (for serialization)
 """
 
 bp = Blueprint("tasks", "tasks", url_prefix="/tasks", description="Task operations")
+
 
 @bp.route("/")
 class TaskList(MethodView):
@@ -29,7 +35,13 @@ class TaskList(MethodView):
         else:
             op = args.get("op")
             raise DataError(f"Unexpected operator {op} found")
-        return db.paginate(q, page=args.get("page"), per_page=args.get("per_page"), max_per_page=10, error_out=False)
+        return db.paginate(
+            q,
+            page=args.get("page"),
+            per_page=args.get("per_page"),
+            max_per_page=10,
+            error_out=False,
+        )
 
     @bp.arguments(TaskSchema)
     @bp.response(201, TaskSchema)
@@ -38,7 +50,7 @@ class TaskList(MethodView):
         db.session.add(item)
         db.session.commit()
         return item
-    
+
     @classmethod
     def _order_by_to_task_column(cls, order_by_enum):
         if order_by_enum == OrderByFieldEnum.id:
@@ -49,6 +61,7 @@ class TaskList(MethodView):
             return Task.email
         else:
             raise DataError(f"Unexpected order_by {order_by_enum} found")
+
 
 @bp.route("/<int:task_id>")
 class TaskDetail(MethodView):

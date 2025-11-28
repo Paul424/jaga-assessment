@@ -27,7 +27,10 @@ class PaginationQueryArgsSchema(Schema):
     """
     Schema for validating the page query parameter
     """
+
     page = fields.Int()
     per_page = fields.Int()
-    order_by = fields.Enum(OrderByFieldEnum, by_value=False, load_default=OrderByFieldEnum.id)
+    order_by = fields.Enum(
+        OrderByFieldEnum, by_value=False, load_default=OrderByFieldEnum.id
+    )
     op = fields.Enum(OperatorEnum, by_value=False)
