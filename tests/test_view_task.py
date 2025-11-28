@@ -52,6 +52,65 @@ def test_tasks_get_2_items(client, task_factory):
     assert len(data) == 2
 
 
+@pytest.mark.parametrize(
+    "page, per_page, expected",
+    [
+        (1, None, ["fred", "wilma", "barney", "betty", "bammbamm"]),
+        (None, 5, ["fred", "wilma", "barney", "betty", "bammbamm"]),
+        (1, 5, ["fred", "wilma", "barney", "betty", "bammbamm"]),
+        (2, 5, []),
+        (1, 3, ["fred", "wilma", "barney"]),
+        (2, 3, ["betty", "bammbamm"]),
+        (3, 3, []),
+        (1, 25, ["fred", "wilma", "barney", "betty", "bammbamm"]),
+    ],
+)
+def test_tasks_get_paginate(client, task_factory, page, per_page, expected):
+    task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
+    task2 = task_factory(username="wilma", email="wilma.flintstone@gmail.com")
+    task3 = task_factory(username="barney", email="barney.rubble@gmail.com")
+    task4 = task_factory(username="betty", email="betty.rubble@gmail.com")
+    task5 = task_factory(username="bammbamm", email="bamm.bamm.rubble@gmail.com")
+    query_params = []
+    if page is not None:
+        query_params.append(f"page={page}")
+    if per_page is not None:
+        query_params.append(f"per_page={per_page}")
+    response = client.get(f"/tasks/?{" & ".join(query_params)}")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert [x["username"] for x in data] == expected
+
+
+@pytest.mark.parametrize(
+    "order_by, op, expected",
+    [
+        ("id", None, ["fred", "wilma", "barney", "betty", "bammbamm"]),
+        ("id", "asc", ["fred", "wilma", "barney", "betty", "bammbamm"]),
+        ("id", "desc", ["bammbamm", "betty", "barney", "wilma", "fred"]),
+        ("username", "asc", ["bammbamm", "barney", "betty", "fred", "wilma"]),
+        ("username", "desc", ["wilma", "fred", "betty", "barney", "bammbamm"]),
+        ("email", "asc", ["bammbamm", "barney", "betty", "fred", "wilma"]),
+        ("email", "desc", ["wilma", "fred", "betty", "barney", "bammbamm"]),
+    ],
+)
+def test_tasks_get_order_by(client, task_factory, order_by, op, expected):
+    task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
+    task2 = task_factory(username="wilma", email="wilma.flintstone@gmail.com")
+    task3 = task_factory(username="barney", email="barney.rubble@gmail.com")
+    task4 = task_factory(username="betty", email="betty.rubble@gmail.com")
+    task5 = task_factory(username="bammbamm", email="bamm.bamm.rubble@gmail.com")
+    query_params = []
+    if order_by is not None:
+        query_params.append(f"order_by={order_by}")
+    if op is not None:
+        query_params.append(f"op={op}")
+    response = client.get(f"/tasks/?{" & ".join(query_params)}")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert [x["username"] for x in data] == expected
+
+
 # create
 
 
