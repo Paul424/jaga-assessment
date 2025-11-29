@@ -2,6 +2,16 @@
 
 A small / simple Flask application to retrieve and manage tasks
 
+Packages used:
+- [Flask](https://flask.palletsprojects.com/en/stable/) Light-weight python web framework
+- [SQLAlchemy](https://www.sqlalchemy.org/) for orm layer
+- [marshmallow](https://marshmallow.readthedocs.io/en/latest/index.html) for serializing/deserializing and validation of models on the API
+- [flask-smorest](https://flask-smorest.readthedocs.io/en/latest/index.html) as the REST framework; to simplify writing views
+- [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/) for managing data migrations
+- For the data layer either buildin [SQLite3](https://sqlite.org/) or [postgres using psycopg2](https://pypi.org/project/psycopg2/)
+- [gunicorn](https://gunicorn.org/) for running our app in production
+- [pytest](https://docs.pytest.org/en/stable/) for managing unittests
+
 ## Setup
 
 ```
@@ -45,7 +55,30 @@ curl -XGET http://localhost:5000/tasks/2
 curl -XDELETE http://localhost:5000/tasks/2
 ```
 
-## Build (image)
+## Build and Run (image)
+
+```
+# To build and test
+docker build -t jaga:0.1 --progress=plain --target test .
+
+# To create an image for run
+docker build -t jaga:0.1 --progress=plain --target run .
+
+# Then run using
+docker run -p 8888:8888 jaga:0.1
+
+# Simple test
+curl http://localhost:8888/tasks/
+[]
+
+# Or interactive
+docker run -it -p 8888:8888 jaga:0.1 /bin/bash
+root@ff0575736b75:/app# python
+Python 3.15.0a2 (main, Nov 19 2025, 18:46:12) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from  jaga import app
+>>> app = app.create_app()
+```
 
 ## Run (compose)
 
@@ -55,10 +88,9 @@ curl -XDELETE http://localhost:5000/tasks/2
 
 - type annotations and linting
 - add auth (start /w internal user model + fixture?)
-- add docker file (needs uwsgi setup; gunicorn known...)
-- github actions for build (multi stage to include test)
 - replace sqlite with postgres (or behind an abstraction)
-- docker-compose /w postgresql
+- harden image (run as non root, etc...)
+- gh action docker cache setup and improve labels / tags
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
 - setup Azure account + oauth2 client + app domain + devops pipeline (all bonus)

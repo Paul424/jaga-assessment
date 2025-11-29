@@ -3,9 +3,9 @@ from flask import Flask, url_for, session
 from flask import render_template, redirect
 from flask_smorest import Api
 
-from .views import register_views
-from .db import register_db
-from .models import create_models
+from jaga.views import register_views
+from jaga.db import register_db
+from jaga.models import create_models
 
 
 def create_app(config_override=None):
