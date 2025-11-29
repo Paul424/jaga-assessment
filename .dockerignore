@@ -1,0 +1,7 @@
+Dockerfile
+.github
+compose
+dist
+helm
+instance
+**/*.pyc

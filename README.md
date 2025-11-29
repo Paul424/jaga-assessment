@@ -45,7 +45,30 @@ curl -XGET http://localhost:5000/tasks/2
 curl -XDELETE http://localhost:5000/tasks/2
 ```
 
-## Build (image)
+## Build and Run (image)
+
+```
+# To build and test
+docker build -t jaga:0.1 --progress=plain --target test .
+
+# To create an image for run
+docker build -t jaga:0.1 --progress=plain --target run .
+
+# Then run using
+docker run -p 8888:8888 jaga:0.1
+
+# Simple test
+curl http://localhost:8888/tasks/
+[]
+
+# Or interactive
+docker run -it -p 8888:8888 jaga:0.1 /bin/bash
+root@ff0575736b75:/app# python
+Python 3.15.0a2 (main, Nov 19 2025, 18:46:12) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from  jaga import app
+>>> app = app.create_app()
+```
 
 ## Run (compose)
 
@@ -55,10 +78,9 @@ curl -XDELETE http://localhost:5000/tasks/2
 
 - type annotations and linting
 - add auth (start /w internal user model + fixture?)
-- add docker file (needs uwsgi setup; gunicorn known...)
 - github actions for build (multi stage to include test)
 - replace sqlite with postgres (or behind an abstraction)
-- docker-compose /w postgresql
+- harden image (run as non root, etc...)
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
 - setup Azure account + oauth2 client + app domain + devops pipeline (all bonus)
