@@ -2,6 +2,16 @@
 
 A small / simple Flask application to retrieve and manage tasks
 
+Packages used:
+- [Flask](https://flask.palletsprojects.com/en/stable/) Light-weight python web framework
+- [SQLAlchemy](https://www.sqlalchemy.org/) for orm layer
+- [marshmallow](https://marshmallow.readthedocs.io/en/latest/index.html) for serializing/deserializing and validation of models on the API
+- [flask-smorest](https://flask-smorest.readthedocs.io/en/latest/index.html) as the REST framework; to simplify writing views
+- [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/) for managing data migrations
+- For the data layer either buildin [SQLite3](https://sqlite.org/) or [postgres using psycopg2](https://pypi.org/project/psycopg2/)
+- [gunicorn](https://gunicorn.org/) for running our app in production
+- [pytest](https://docs.pytest.org/en/stable/) for managing unittests
+
 ## Setup
 
 ```
