@@ -78,9 +78,9 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 - type annotations and linting
 - add auth (start /w internal user model + fixture?)
-- github actions for build (multi stage to include test)
 - replace sqlite with postgres (or behind an abstraction)
 - harden image (run as non root, etc...)
+- gh action docker cache setup and improve labels / tags
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
 - setup Azure account + oauth2 client + app domain + devops pipeline (all bonus)
