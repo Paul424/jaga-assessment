@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/Paul424/jaga-assessment/compare/v0.2.0...v0.3.0) (2025-11-29)
+
+
+### Features
+
+* Adding dockerfile + compose setup and gh build+test+push ([10ff115](https://github.com/Paul424/jaga-assessment/commit/10ff115a1e8c4d424fca54d920d14d6420bdf72c))
+
 ## [0.2.0](https://github.com/Paul424/jaga-assessment/compare/v0.1.0...v0.2.0) (2025-11-28)
 
 
