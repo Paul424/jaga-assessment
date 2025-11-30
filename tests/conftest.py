@@ -49,5 +49,7 @@ def task_factory():
 # Fixture to bypass oauth2 for views
 @pytest.fixture()
 def no_oauth():
-    with patch('jaga.auth.decorators.require_oauth.acquire_token', lambda scopes: scopes):
+    with patch(
+        "jaga.auth.decorators.require_oauth.acquire_token", lambda scopes: scopes
+    ):
         yield
