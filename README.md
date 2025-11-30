@@ -11,6 +11,7 @@ Packages used:
 - For the data layer either buildin [SQLite3](https://sqlite.org/) or [postgres using psycopg2](https://pypi.org/project/psycopg2/)
 - [gunicorn](https://gunicorn.org/) for running our app in production
 - [pytest](https://docs.pytest.org/en/stable/) for managing unittests
+- [authlib](https://docs.authlib.org/en/latest/index.html) for managing OAuth2 and protecting resources we own
 
 ## Setup
 
@@ -38,21 +39,22 @@ pytest -v
 
 ## Run (sandbox)
 
+Notice a token needs to be injected for protected views; see the auth section how to generate a token.
+
 ```
 # Using internal debug server
 cd jaga
 flask --app app run --debug
 
-# On another shell
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"fred", "email":"fred.flintstone@gmail.com"}'
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"barney", "email":"barney.rubble@gmail.com"}'
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"betty", "email":"betty.rubble@gmail.com"}'
-curl -XGET http://localhost:5000/tasks/
-curl -XGET http://localhost:5000/tasks/1
-curl -XPUT http://localhost:5000/tasks/2 -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
-curl -XGET http://localhost:5000/tasks/2
-curl -XDELETE http://localhost:5000/tasks/2
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"fred", "email":"fred.flintstone@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"barney", "email":"barney.rubble@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"betty", "email":"betty.rubble@gmail.com"}'
+curl -XGET http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx'
+curl -XGET http://localhost:5000/tasks/1 -H 'Authorization: Bearer xxx'
+curl -XPUT http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
+curl -XGET http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxx'
+curl -XDELETE http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxx'
 ```
 
 ## Build and Run (image)
@@ -84,21 +86,28 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 ## Run (kind)
 
+## Auth
+
+The REST views are protected using a required OAuth2 scope. First generate a token by logging in to the upstream idp:
+
+    http://localhost:5000/auth/token
+
+Then insert the Bearer token in subsequent requests:
+'''
+curl -XGET http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxxxxx'
+'''
+
+
 ## Todo list
 
 - type annotations and linting
-- add auth (start /w internal user model + fixture?)
-- replace sqlite with postgres (or behind an abstraction)
+- auth
+    - add keycloak to compose setup
+    - move gh to azure ad
 - harden image (run as non root, etc...)
 - gh action docker cache setup and improve labels / tags
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
 - setup Azure account + oauth2 client + app domain + devops pipeline (all bonus)
-
-refs:
-- https://docs.authlib.org/en/latest/client/flask.html
-- https://github.com/authlib/demo-oauth-client/blob/master/flask-google-login/app.py
-- https://stackoverflow.com/questions/75652936/how-to-unit-test-that-a-flask-apps-routes-are-protected-by-authlibs-resourcepr
-- liefst heb ik oauth2 oidc tegen keycloak onder compose / kind want dan werkt het voor ieder; zonder google/gh confs
-- production / staging is dan tegen Azure AD (andere client conf)
-- in unittest redirect aftesten en token fetch mocken tbv bypass
+- add metrics endpoint + dashboard
+- multiple worker support

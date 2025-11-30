@@ -1,6 +1,5 @@
 import yaml
 
-
 # View to expose OpenAPI spec document
 def openapi(app, api):
     spec = api.spec.to_dict()
