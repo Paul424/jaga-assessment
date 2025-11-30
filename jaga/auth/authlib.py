@@ -3,12 +3,16 @@ from authlib.integrations.flask_client import OAuth
 
 from jaga.error import ConfigurationError
 
+
 def get_auth_client():
     # fetch the oauth engine from the app
     auth_client = current_app.extensions.get("authlib.integrations.flask_client", None)
     if not auth_client:
-        raise ConfigurationError(f"View requires the auth client but nothing seems registered on the app")
+        raise ConfigurationError(
+            f"View requires the auth client but nothing seems registered on the app"
+        )
     return getattr(auth_client, current_app.config["AUTH_NAME"])
+
 
 def register_auth(app):
     app.logger.debug(f"Register Authlib")
@@ -27,6 +31,6 @@ def register_auth(app):
         authorize_params=app.config["AUTH_AUTHORIZE_PARAMS"],
         api_base_url=app.config["AUTH_API_BASE_URL"],
         client_kwargs={
-            'scope': app.config["AUTH_SCOPE"],
+            "scope": app.config["AUTH_SCOPE"],
         },
     )

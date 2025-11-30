@@ -12,6 +12,7 @@ def login_required(f):
     """
     Custom login-required decorator to test if the user is logged-in and redirect to the idp (oauth cycle) when this is not the case.
     """
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
         current_app.logger.info(f"test if logged-in")
@@ -26,18 +27,22 @@ def login_required(f):
             return auth_client.authorize_redirect(redirect_url)
 
         return f(*args, **kwargs)
+
     return decorated_function
 
 
 # Decorator to protect resources we own / expose
 require_oauth = ResourceProtector()
 
+
 class BearerTokenValidatorDb(BearerTokenValidator):
     """
     Validate token against stored in our db
     """
+
     def authenticate_token(self, token_string):
         current_app.logger.info(f"validate token using db")
         return Token.query.filter_by(access_token=token_string).first()
+
 
 require_oauth.register_token_validator(BearerTokenValidatorDb())

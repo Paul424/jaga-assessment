@@ -36,7 +36,7 @@ def create_app(config_override=None):
 
     # Register auth
     register_auth(app)
-    
+
     # Register the db
     db = register_db(app)
 
