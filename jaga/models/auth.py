@@ -12,7 +12,8 @@ class Token(db.Model, OAuth2TokenMixin):
 
     The model however is not a good fit for Azure or icw jwt token, for now we make it fit but it would be better to define the oauth2 protocol first (grant-types, claim, scopes, ...) and then support the model for it.
     """
+
     id: Mapped[int] = mapped_column(primary_key=True)
-    
+
     # Override to accommodate for Azure access_token (which are larger and cannot be indexed by postgresql)
     access_token = db.Column(String(4096), unique=False, nullable=False)
