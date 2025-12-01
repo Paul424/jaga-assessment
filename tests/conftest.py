@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 
 from jaga.app import create_app
 from jaga.db import db
@@ -43,3 +44,12 @@ def task_factory():
         return t
 
     return _build
+
+
+# Fixture to bypass oauth2 for views
+@pytest.fixture()
+def no_oauth():
+    with patch(
+        "jaga.auth.decorators.require_oauth.acquire_token", lambda scopes: scopes
+    ):
+        yield

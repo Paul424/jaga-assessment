@@ -5,7 +5,11 @@ This setup is specifically created to run against a postgres database and keyclo
 # Run
 
 ```
-# Simply up the network and services
+# Configure secrets (or source an .env instead)
+export AUTH_CLIENT_ID=ABC
+export AUTH_CLIENT_SECRET=ABC
+
+# Up the network and services
 docker compose up [-d]
 ```
 

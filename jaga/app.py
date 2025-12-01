@@ -3,6 +3,7 @@ from flask import Flask, url_for, session
 from flask import render_template, redirect
 from flask_smorest import Api
 
+from jaga.auth import register_auth
 from jaga.views import register_views
 from jaga.db import register_db
 from jaga.models import create_models
@@ -32,6 +33,9 @@ def create_app(config_override=None):
     app.logger.debug(f"Configured instance path {app.instance_path}")
     if not os.path.exists(app.instance_path):
         os.makedirs(app.instance_path)
+
+    # Register auth
+    register_auth(app)
 
     # Register the db
     db = register_db(app)

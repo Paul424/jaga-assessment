@@ -16,23 +16,23 @@ import pytest
         pytest.param("patch", id="PATCH"),
     ],
 )
-def test_tasks_get_not_allowed(client, method_name):
+def test_tasks_get_not_allowed(client, no_oauth, method_name):
     response = getattr(client, method_name)("/tasks/")
     assert response.status_code == 405  # METHOD NOT ALLOWED
 
 
-def test_tasks_head(client):
+def test_tasks_head(client, no_oauth):
     response = client.head("/tasks/")
     assert response.status_code == 200
 
 
-def test_tasks_options(client):
+def test_tasks_options(client, no_oauth):
     response = client.options("/tasks/")
     assert response.status_code == 200
     assert response.allow.as_set() == set(["post", "get", "head", "options"])
 
 
-def test_tasks_get_empty(client):
+def test_tasks_get_empty(client, no_oauth):
     response = client.get("/tasks/")
     assert response.status_code == 200
     data = response.get_json()
@@ -40,7 +40,7 @@ def test_tasks_get_empty(client):
     assert len(data) == 0
 
 
-def test_tasks_get_2_items(client, task_factory):
+def test_tasks_get_2_items(client, no_oauth, task_factory):
     task1 = task_factory(username="Fred Flintstone", email="fred.flintstone@gmail.com")
     task2 = task_factory(
         username="Wilma Flintstone", email="wilma.flintstone@gmail.com"
@@ -65,7 +65,7 @@ def test_tasks_get_2_items(client, task_factory):
         (1, 25, ["fred", "wilma", "barney", "betty", "bammbamm"]),
     ],
 )
-def test_tasks_get_paginate(client, task_factory, page, per_page, expected):
+def test_tasks_get_paginate(client, no_oauth, task_factory, page, per_page, expected):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     task2 = task_factory(username="wilma", email="wilma.flintstone@gmail.com")
     task3 = task_factory(username="barney", email="barney.rubble@gmail.com")
@@ -95,7 +95,7 @@ def test_tasks_get_paginate(client, task_factory, page, per_page, expected):
         ("email", "desc", ["wilma", "fred", "betty", "barney", "bammbamm"]),
     ],
 )
-def test_tasks_get_order_by(client, task_factory, order_by, op, expected):
+def test_tasks_get_order_by(client, no_oauth, task_factory, order_by, op, expected):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     task2 = task_factory(username="wilma", email="wilma.flintstone@gmail.com")
     task3 = task_factory(username="barney", email="barney.rubble@gmail.com")
@@ -115,12 +115,12 @@ def test_tasks_get_order_by(client, task_factory, order_by, op, expected):
 # create
 
 
-def test_tasks_create_no_data(client):
+def test_tasks_create_no_data(client, no_oauth):
     response = client.post("/tasks/", json={})
     assert response.status_code == 422  # UNPROCESSABLE_CONTENT
 
 
-def test_tasks_create_incomplete_data(client):
+def test_tasks_create_incomplete_data(client, no_oauth):
     response = client.post(
         "/tasks/",
         json={
@@ -130,7 +130,7 @@ def test_tasks_create_incomplete_data(client):
     assert response.status_code == 422  # UNPROCESSABLE_CONTENT
 
 
-def test_tasks_create_wrong_field(client):
+def test_tasks_create_wrong_field(client, no_oauth):
     response = client.post(
         "/tasks/",
         json={
@@ -140,7 +140,7 @@ def test_tasks_create_wrong_field(client):
     assert response.status_code == 422  # UNPROCESSABLE_CONTENT
 
 
-def test_tasks_create_validation_error_email(client):
+def test_tasks_create_validation_error_email(client, no_oauth):
     response = client.post(
         "/tasks/",
         json={
@@ -151,7 +151,7 @@ def test_tasks_create_validation_error_email(client):
     assert response.status_code == 422  # UNPROCESSABLE_CONTENT
 
 
-def test_tasks_create_ok(client):
+def test_tasks_create_ok(client, no_oauth):
     response = client.post(
         "/tasks/",
         json={
@@ -180,7 +180,7 @@ def test_tasks_create_ok(client):
         pytest.param("patch", id="PATCH"),
     ],
 )
-def test_tasks_create_not_allowed(client, task_factory, method_name):
+def test_tasks_create_not_allowed(client, no_oauth, task_factory, method_name):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = getattr(client, method_name)(
         f"/tasks/{task1.id}", json={"username": task1.username, "email": task1.email}
@@ -188,13 +188,13 @@ def test_tasks_create_not_allowed(client, task_factory, method_name):
     assert response.status_code == 405  # METHOD NOT ALLOWED
 
 
-def test_tasks_head(client, task_factory):
+def test_tasks_head(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.head(f"/tasks/{task1.id}")
     assert response.status_code == 200
 
 
-def test_tasks_options(client, task_factory):
+def test_tasks_options(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.options(f"/tasks/{task1.id}")
     assert response.status_code == 200
@@ -204,7 +204,7 @@ def test_tasks_options(client, task_factory):
 # update
 
 
-def test_tasks_update_item_not_found(client, task_factory):
+def test_tasks_update_item_not_found(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.put(
         f"/tasks/{task1.id + 1}",
@@ -213,7 +213,7 @@ def test_tasks_update_item_not_found(client, task_factory):
     assert response.status_code == 404
 
 
-def test_tasks_update_same(client, task_factory):
+def test_tasks_update_same(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.put(
         f"/tasks/{task1.id}", json={"username": task1.username, "email": task1.email}
@@ -224,7 +224,7 @@ def test_tasks_update_same(client, task_factory):
     assert data["email"] == task1.email
 
 
-def test_tasks_update_changes(client, task_factory):
+def test_tasks_update_changes(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.put(
         f"/tasks/{task1.id}",
@@ -239,7 +239,7 @@ def test_tasks_update_changes(client, task_factory):
 # delete
 
 
-def test_tasks_delete_item_not_found(client, task_factory):
+def test_tasks_delete_item_not_found(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.delete(
         f"/tasks/{task1.id + 1}",
@@ -248,7 +248,7 @@ def test_tasks_delete_item_not_found(client, task_factory):
     assert response.status_code == 404
 
 
-def test_tasks_delete_item(client, task_factory):
+def test_tasks_delete_item(client, no_oauth, task_factory):
     task1 = task_factory(username="fred", email="fred.flintstone@gmail.com")
     response = client.delete(
         f"/tasks/{task1.id}", json={"username": task1.username, "email": task1.email}

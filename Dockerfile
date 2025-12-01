@@ -13,7 +13,8 @@ RUN apt-get -y update &&  \
     build-essential \
     postgresql \
     postgresql-contrib \
-    libpq-dev 
+    libpq-dev \
+    libffi-dev
 
 ###################################################################
 # Build stage to product the wheel artifact

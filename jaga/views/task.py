@@ -11,6 +11,7 @@ from jaga.schemas.task import (
     OrderByFieldEnum,
     OperatorEnum,
 )
+from jaga.auth.decorators import require_oauth
 
 """
 REST view using flask_smorest / flask-rest-api (for clean views including validation) and marshmallow (for serialization)
@@ -21,6 +22,11 @@ bp = Blueprint("tasks", "tasks", url_prefix="/tasks", description="Task operatio
 
 @bp.route("/")
 class TaskList(MethodView):
+    decorators = [
+        # Require user is authenticated and has specified scopes (authorization)
+        require_oauth(None),
+    ]
+
     @bp.arguments(PaginationQueryArgsSchema, location="querystring")
     @bp.response(200, TaskSchema(many=True))
     def get(self, args):
@@ -65,6 +71,11 @@ class TaskList(MethodView):
 
 @bp.route("/<int:task_id>")
 class TaskDetail(MethodView):
+    decorators = [
+        # Require user is authenticated and has specified scopes (authorization)
+        require_oauth(None),
+    ]
+
     @bp.response(200, TaskSchema)
     def get(self, task_id):
         item = Task.query.get_or_404(task_id)

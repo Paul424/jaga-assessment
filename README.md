@@ -11,6 +11,20 @@ Packages used:
 - For the data layer either buildin [SQLite3](https://sqlite.org/) or [postgres using psycopg2](https://pypi.org/project/psycopg2/)
 - [gunicorn](https://gunicorn.org/) for running our app in production
 - [pytest](https://docs.pytest.org/en/stable/) for managing unittests
+- [authlib](https://docs.authlib.org/en/latest/index.html) for managing OAuth2 and protecting resources we own
+
+## Notes
+
+Firstly I like to mention i enjoyed working on this assessment. I worked on it for a few (1/2) days and touched upon most of the topics.
+
+Parts i liked most:
+- REST api integration and validation
+- unittest using pytest
+- docker build and test (also on gh workflow)
+
+Part that would need attention is the auth (oauth2) integration. Combining the client with the resource server and not having a clear spec of the role of the backend app (grant-types) makes it confusing.
+
+Also i wanted to add a helm chart and kind setup to integrate with Kubernetes API's, but time is up for me...
 
 ## Setup
 
@@ -38,21 +52,22 @@ pytest -v
 
 ## Run (sandbox)
 
+Notice a token needs to be injected for protected views; see the auth section how to generate a token.
+
 ```
 # Using internal debug server
 cd jaga
 flask --app app run --debug
 
-# On another shell
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"fred", "email":"fred.flintstone@gmail.com"}'
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"barney", "email":"barney.rubble@gmail.com"}'
-curl -XPOST http://localhost:5000/tasks/ -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"betty", "email":"betty.rubble@gmail.com"}'
-curl -XGET http://localhost:5000/tasks/
-curl -XGET http://localhost:5000/tasks/1
-curl -XPUT http://localhost:5000/tasks/2 -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
-curl -XGET http://localhost:5000/tasks/2
-curl -XDELETE http://localhost:5000/tasks/2
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"fred", "email":"fred.flintstone@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"barney", "email":"barney.rubble@gmail.com"}'
+curl -XPOST http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"betty", "email":"betty.rubble@gmail.com"}'
+curl -XGET http://localhost:5000/tasks/ -H 'Authorization: Bearer xxx'
+curl -XGET http://localhost:5000/tasks/1 -H 'Authorization: Bearer xxx'
+curl -XPUT http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxx' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"username":"wilma", "email":"wilma.flintstone@gmail.com"}'
+curl -XGET http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxx'
+curl -XDELETE http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxx'
 ```
 
 ## Build and Run (image)
@@ -84,21 +99,45 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 ## Run (kind)
 
+## Auth
+
+The REST views are protected using a required OAuth2 scope. First generate a token by logging in to the upstream idp:
+
+    http://localhost:5000/auth/token
+
+Then insert the Bearer token in subsequent requests:
+'''
+curl -XGET http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxxxxx'
+'''
+
+### Setup (Github)
+
+Register a new app in the Github console:
+1. Navigate to [OAuth Apps](https://github.com/settings/developers) and create a new OAuth app
+2. Set the homepage url to for instance: http://localhost:5000/ (for local sandbox) and callback url to http://localhost:5000/auth/authorize
+3. Create a new client secret
+
+Then take the client-id and secret to the app configuration.
+
+### Setup (Azure)
+
+Register a new app in the console:
+1. [App registrations](https://portal.azure.com/?quickstart=True#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+2. Set the return uri for web platform; for instance http://localhost:5000/auth/authorize for sandbox or http://localhost:8888/auth/authorize for the compose setup
+3. In Manage - Authentication - Advanced settings; set "Enable the following mobile and desktop flows" to Yes
+4. In Manage - Certificates & secrets; Create a secret
+
+Then take the client-id, secret and uri's to the app configuration.
+
 ## Todo list
 
 - type annotations and linting
-- add auth (start /w internal user model + fixture?)
-- replace sqlite with postgres (or behind an abstraction)
+- auth
+    - add keycloak to compose setup
+    - improve use of the Token model and get rid of the login entirely (should only have a /token endpoint)
 - harden image (run as non root, etc...)
 - gh action docker cache setup and improve labels / tags
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
-- setup Azure account + oauth2 client + app domain + devops pipeline (all bonus)
-
-refs:
-- https://docs.authlib.org/en/latest/client/flask.html
-- https://github.com/authlib/demo-oauth-client/blob/master/flask-google-login/app.py
-- https://stackoverflow.com/questions/75652936/how-to-unit-test-that-a-flask-apps-routes-are-protected-by-authlibs-resourcepr
-- liefst heb ik oauth2 oidc tegen keycloak onder compose / kind want dan werkt het voor ieder; zonder google/gh confs
-- production / staging is dan tegen Azure AD (andere client conf)
-- in unittest redirect aftesten en token fetch mocken tbv bypass
+- add metrics endpoint + dashboard
+- multiple worker support
