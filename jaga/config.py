@@ -33,7 +33,8 @@ AUTH_AUTHORIZE_PARAMS = None
 AUTH_API_BASE_URL = os.getenv("AUTH_API_BASE_URL", "https://api.github.com/")
 AUTH_SCOPE = os.getenv("AUTH_SCOPE", "user:email")
 AUTH_JWKS_URI = os.getenv(
-    "AUTH_JWKS_URI", None,
+    "AUTH_JWKS_URI",
+    None,
 )
 
 # Auth Azure
