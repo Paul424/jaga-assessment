@@ -33,4 +33,6 @@ def register_auth(app):
         client_kwargs={
             "scope": app.config["AUTH_SCOPE"],
         },
+        jwks_uri = app.config["AUTH_JWKS_URI"],
+
     )

@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, redirect, session, request, jsonify
+from flask import Blueprint, url_for, redirect, session, request, jsonify, current_app
 
 from jaga.auth.authlib import get_auth_client
 from jaga.error import DataError
@@ -18,6 +18,14 @@ def create_or_update_token(token):
     """
     Store the token in the db; so we can validate the token from the header with the stored token
     """
+    current_app.logger.debug(f"Create or update token using {token}")
+
+    # Azure specific additional properties due to token_id (jwks)
+    del token["ext_expires_in"]
+    del token["id_token"]
+    del token["expires_at"]
+    del token["userinfo"]
+
     t = Token(**token)
     db.session.add(t)
     db.session.commit()

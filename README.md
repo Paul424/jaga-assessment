@@ -13,6 +13,19 @@ Packages used:
 - [pytest](https://docs.pytest.org/en/stable/) for managing unittests
 - [authlib](https://docs.authlib.org/en/latest/index.html) for managing OAuth2 and protecting resources we own
 
+## Notes
+
+Firstly I like to mention i enjoyed working on this assessment. I worked on it for a few (1/2) days and touched upon most of the topics.
+
+Parts i liked most:
+- REST api integration and validation
+- unittest using pytest
+- docker build and test (also on gh workflow)
+
+Part that would need attention is the auth (oauth2) integration. Combining the client with the resource server and not having a clear spec of the role of the backend app (grant-types) makes it confusing.
+
+Also i wanted to add a helm chart and kind setup to integrate with Kubernetes API's, but time is up for me...
+
 ## Setup
 
 ```
@@ -97,17 +110,34 @@ Then insert the Bearer token in subsequent requests:
 curl -XGET http://localhost:5000/tasks/2 -H 'Authorization: Bearer xxxxxx'
 '''
 
+### Setup (Github)
+
+Register a new app in the Github console:
+1. Navigate to [OAuth Apps](https://github.com/settings/developers) and create a new OAuth app
+2. Set the homepage url to for instance: http://localhost:5000/ (for local sandbox) and callback url to http://localhost:5000/auth/authorize
+3. Create a new client secret
+
+Then take the client-id and secret to the app configuration.
+
+### Setup (Azure)
+
+Register a new app in the console:
+1. [App registrations](https://portal.azure.com/?quickstart=True#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+2. Set the return uri for web platform; for instance http://localhost:5000/auth/authorize for sandbox or http://localhost:8888/auth/authorize for the compose setup
+3. In Manage - Authentication - Advanced settings; set "Enable the following mobile and desktop flows" to Yes
+4. In Manage - Certificates & secrets; Create a secret
+
+Then take the client-id, secret and uri's to the app configuration.
 
 ## Todo list
 
 - type annotations and linting
 - auth
     - add keycloak to compose setup
-    - move gh to azure ad
+    - improve use of the Token model and get rid of the login entirely (should only have a /token endpoint)
 - harden image (run as non root, etc...)
 - gh action docker cache setup and improve labels / tags
 - add helm chart
 - add kind setup /w postgresql for now simply expose rest svc and add some dummy tests in readme
-- setup Azure account + oauth2 client + app domain + devops pipeline (all bonus)
 - add metrics endpoint + dashboard
 - multiple worker support
