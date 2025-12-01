@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/Paul424/jaga-assessment/compare/v0.3.0...v0.4.0) (2025-12-01)
+
+
+### Features
+
+* Adding auth using authlib ([9ba568a](https://github.com/Paul424/jaga-assessment/commit/9ba568a208959e0248a982dec6607888af674396))
+* Adding auth using authlib ([4b66044](https://github.com/Paul424/jaga-assessment/commit/4b66044bd138cd8c457cf4492a894f98e6995480))
+* Configure compose for Azure auth + fix ([a84452b](https://github.com/Paul424/jaga-assessment/commit/a84452b19907f27e912961f389c6743eecf4d8ce))
+
+
+### Bug Fixes
+
+* ffi devel dependency ([2e05f6b](https://github.com/Paul424/jaga-assessment/commit/2e05f6b94795c896d3a1593a8b1edfb013c871d7))
+
 ## [0.3.0](https://github.com/Paul424/jaga-assessment/compare/v0.2.0...v0.3.0) (2025-11-29)
 
 
